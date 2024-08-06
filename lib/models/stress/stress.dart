@@ -7,9 +7,8 @@ import 'package:shealth_downloader/models/datetime_converter.dart';
 part 'stress.freezed.dart';
 part 'stress.g.dart';
 
-@freezed
-
 /// Stress internal data model
+@freezed
 class Stress with _$Stress {
   @JsonSerializable(explicitToJson: true)
   @DateTimeMillisecondsConverter()
