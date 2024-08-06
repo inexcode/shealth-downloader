@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:samsung_downloader/models/datetime_converter.dart';
+import 'package:shealth_downloader/models/datetime_converter.dart';
 
 part 'stress.freezed.dart';
 part 'stress.g.dart';

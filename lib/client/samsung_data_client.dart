@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:samsung_downloader/models/stress/stress.dart';
+import 'package:shealth_downloader/models/stress/stress.dart';
 
 class PaginatedResponse<T> {
   PaginatedResponse({

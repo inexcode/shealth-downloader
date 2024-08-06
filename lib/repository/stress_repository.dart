@@ -1,8 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:samsung_downloader/client/mongo_client.dart';
-import 'package:samsung_downloader/client/samsung_data_client.dart';
-import 'package:samsung_downloader/models/stress/stress.dart';
-import 'package:samsung_downloader/repository/samsung_repository.dart';
+import 'package:shealth_downloader/client/mongo_client.dart';
+import 'package:shealth_downloader/client/samsung_data_client.dart';
+import 'package:shealth_downloader/models/stress/stress.dart';
+import 'package:shealth_downloader/repository/samsung_repository.dart';
 
 class StressRepository implements SamsungItemRepository {
   StressRepository() {
