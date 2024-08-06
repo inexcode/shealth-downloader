@@ -2,6 +2,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shealth_downloader/client/mongo_client.dart';
 import 'package:shealth_downloader/client/samsung_data_client.dart';
 import 'package:shealth_downloader/models/stress/stress.dart';
+import 'package:shealth_downloader/repository/auth_repository.dart';
 import 'package:shealth_downloader/repository/samsung_repository.dart';
 
 class StressRepository implements SamsungItemRepository {
@@ -9,13 +10,13 @@ class StressRepository implements SamsungItemRepository {
     _db = MongoClient.getDatabase();
     _lastCheckPointCollection = _db.collection('LastCheckPoint');
     _stressCollection = _db.collection('Stress');
-    _client = SamsungDataClient.fromEnv();
+    _authRepository = AuthRepository();
   }
 
   late Db _db;
   late DbCollection _lastCheckPointCollection;
   late DbCollection _stressCollection;
-  late SamsungDataClient _client;
+  late AuthRepository _authRepository;
 
   @override
   Future<void> load() async {
@@ -37,13 +38,18 @@ class StressRepository implements SamsungItemRepository {
   }
 
   Future<void> _downloadHistoricalData() async {
+    final token = await _authRepository.getBearerToken();
+    if (token == null) {
+      throw Exception('No token found');
+    }
+    final client = SamsungDataClient(bearerToken: token.token);
     print('Downloading historical data for Stress');
     final List<Stress> stressData = [];
     bool hasNext = true;
     String? nextPageToken;
     DateTime pagingStartedAt = DateTime.now();
     while (hasNext) {
-      final response = await _client.getStressData(pageToken: nextPageToken);
+      final response = await client.getStressData(pageToken: nextPageToken);
       stressData.addAll(response.data);
       hasNext = response.hasNext;
       nextPageToken = response.nextPageToken;
@@ -66,6 +72,11 @@ class StressRepository implements SamsungItemRepository {
   Future<void> _loadChangesetAndPerformUpdates(
     final DateTime lastCheckPoint,
   ) async {
+    final token = await _authRepository.getBearerToken();
+    if (token == null) {
+      throw Exception('No token found');
+    }
+    final client = SamsungDataClient(bearerToken: token.token);
     print('Loading changeset for Stress');
     print('Since ${lastCheckPoint.toIso8601String()}');
     final List<Stress> stressData = [];
@@ -73,7 +84,7 @@ class StressRepository implements SamsungItemRepository {
     String? nextPageToken;
     DateTime newCheckPoint = DateTime.now();
     while (hasNext) {
-      final response = await _client.getStressDataDiff(
+      final response = await client.getStressDataDiff(
         lastCheckPoint: lastCheckPoint,
         pageToken: nextPageToken,
       );
